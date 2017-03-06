@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <title>Sensors display</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+   </head>
+    <body>    
+    <script>
+	
+		  var temperatur = 'nc';
+		  var Humidite='nc';
+		  var PsAtmo= 'nc';
+		  var Luminosite = 'nc';
+		  var bruit = 'nc';
+		  var Altitude = 'nc';
+
+		 function displayMyVar (targetElementId)
+		  {
+		   document.getElementById('target1').innerHTML = temperatur ;
+			document.getElementById('target2').innerHTML = Humidite;
+			document.getElementById('target3').innerHTML = PsAtmo;
+			document.getElementById('target4').innerHTML = Altitude;
+			document.getElementById('target5').innerHTML = Luminosite;
+			document.getElementById('target6').innerHTML = bruit ;
+		  }
+	
+		function get()
+		{
+
+			var url = 'https://liveobjects.orange-business.com/api/v0/data/streams/urn%3Alo%3Ansid%3AespWebRadio%3A14433047!DataSensor%26OnlineCheck';
+
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function (aEvt) 
+			{
+                  
+			  if (req.readyState == 4) 
+			  {
+					console.log(req.readyState);
+					console.log(req.status);
+					if(req.status == 200)
+					{
+					
+					    var ArrData = JSON.parse(req.responseText);
+						var LastData= ArrData[0];				
+						console.log(LastData);
+						
+						var AllValue = LastData.value
+						console.log(AllValue);
+						
+						temperatur= AllValue.temperatur;
+						console.log(temperatur);
+						
+						Humidite= AllValue.Humidite;
+						console.log(Humidite);
+						
+						PsAtmo= AllValue.PsAtmo;
+						console.log(PsAtmo);
+						
+						Luminosite= AllValue.Luminosite;
+						console.log(Luminosite);
+						
+						bruit= AllValue.bruit;
+						console.log(bruit);
+						
+						Altitude= AllValue.Altitude;
+						console.log(Altitude);
+						
+						displayMyVar ();
+						
+					}
+					else
+					{
+						console.log("Erreur pendant le chargement de la page.\n");
+					}
+			  }
+			};
+			req.open('GET', url, true);
+			req.setRequestHeader("X-API-KEY", '7ef7949fb37c454aa3087f63c276573d');
+			req.send(null);
+
+		}
+
+    </script>
+ 
+        <form>
+            <h1>Esp radio sensors display</h1>
+			<p><strong>Verssion 1.0</strong> </p>
+			<p>Éditeur: <em>Erwann Caroff</em></p>
+			<p>Lieux de mesure: Lb 120b</p>
+            <p>----------------------------------------------------------------	</p>
+			<body onload="get();">
+            <li><label>Température: <body onload="displayMyVar('target');"> <span id="target1"/></label> °C </li> 
+            <li><label>Humidité: <body onload="displayMyVar('target');"> <span id="target2"/></label> % </li> 
+            <li><label>Pression atmosphérique: <body onload="displayMyVar('target');"> <span id="target3"/></label> hPa</li> 
+            <li><label>Altitude: <body onload="displayMyVar('target');"> <span id="target4"/></label> m </li> 
+            <li><label>Luminosité: <body onload="displayMyVar('target');"> <span id="target5"/></label> Lumen</li> 
+            <li><label>Bruit: <body onload="displayMyVar('target');"> <span id="target6"/></label> % </li> 
+        </form>
+		<body>
+		<input type='button' value='Actualiser la page' onclick='get()' />
+		<p><img src="http://c.orange.fr/logo-orange.png" alt="Logo Orange" /></p>
+		<meta http-equiv="refresh" content="10; url="http://127.0.0.1/"/>
+	</body>
+</html>
