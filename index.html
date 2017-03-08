@@ -1,0 +1,284 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+    <head>
+        <title>Sensors display</title>
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+		<audio id="xyz" src="Short-ringtone-for-notification.mp3" preload="auto"></audio>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+
+		        <style>
+
+            h1
+
+            {
+
+                color: orange;
+
+            }
+
+        </style>
+   </head>
+    <body>    
+    <script>
+		  var myVar = setInterval(myTimer, 1000);
+		  var timeout = 0;
+		  var temperatur = 'nc';
+		  var Humidite='nc';
+		  var PsAtmo= 'nc';
+		  var Luminosite = 'nc';
+		  var bruit = 'nc';
+		  var Altitude = 'nc';
+		  
+		  var Vol = 'nc';
+		  var State ='nc';
+		  var Gateway= 'nc';
+		  var Ip = 'nc';
+		  
+		  var Station = 'nc';
+		  var Song = 'nc';
+		  
+		  var dateData;
+		  var dateDataMemory ;
+
+		 function displayMyVar (targetElementId)
+		  {
+		    document.getElementById('target1').innerHTML = temperatur ;
+			document.getElementById('target2').innerHTML = Humidite;
+			document.getElementById('target3').innerHTML = PsAtmo;
+			document.getElementById('target4').innerHTML = Altitude;
+			document.getElementById('target5').innerHTML = Luminosite;
+			document.getElementById('target6').innerHTML = bruit;
+			
+			document.getElementById('target8').innerHTML = Vol;
+			document.getElementById('target9').innerHTML = State ;
+			document.getElementById('target10').innerHTML = Gateway ;
+			document.getElementById('target11').innerHTML = Ip ;
+			
+			document.getElementById('target12').innerHTML = Station ;
+			document.getElementById('target13').innerHTML = Song  ;
+		  }
+	
+		function getSensors(dateData)
+		{
+
+			var urlSensors = 'https://liveobjects.orange-business.com/api/v0/data/streams/urn%3Alo%3Ansid%3AespWebRadio%3A14433047!DataSensor%26OnlineCheck';
+			
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function (aEvt) 
+			{
+                  
+			  if (req.readyState == 4) 
+			  {
+					console.log(req.readyState);
+					console.log(req.status);
+					if(req.status == 200)
+					{
+					
+					    var ArrData = JSON.parse(req.responseText);
+						var LastData= ArrData[0];				
+						console.log(LastData);
+						
+						var AllValue = LastData.value;
+						console.log(AllValue);
+						
+						
+						dateData = LastData.timestamp;
+						console.log(dateData);
+						document.getElementById("demo").innerHTML = new Date(dateData);
+						
+						
+						if (dateData != dateDataMemory)
+						{
+							document.getElementById('xyz').play();
+							timeout = 30;
+							dateDataMemory = dateData;
+						}
+						
+						temperatur= AllValue.temperatur;
+						console.log(temperatur);
+						
+						Humidite= AllValue.Humidite;
+						console.log(Humidite);
+						
+						PsAtmo= AllValue.PsAtmo;
+						console.log(PsAtmo);
+						
+						Luminosite= AllValue.Luminosite;
+						console.log(Luminosite);
+						
+						bruit= AllValue.bruit;
+						console.log(bruit);
+						
+						Altitude= AllValue.Altitude;
+						console.log(Altitude);
+						
+						displayMyVar ();	
+				
+					}
+					else
+					{
+						console.log("Erreur pendant le chargement de la page.\n");
+					}
+			  }
+			};
+			req.open('GET', urlSensors , true);
+			req.setRequestHeader("X-API-KEY", '7ef7949fb37c454aa3087f63c276573d');
+			req.send(null);
+			getEtat();
+
+		}
+		
+	    function getEtat()
+		{
+
+			var urlEtatRadio = 'https://liveobjects.orange-business.com/api/v0/data/streams/urn%3Alo%3Ansid%3AespWebRadio%3A14433047!State%26OnlineCheck?limit=100';
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function (aEvt) 
+			{
+                  
+			  if (req.readyState == 4) 
+			  {
+					console.log(req.readyState);
+					console.log(req.status);
+					if(req.status == 200)
+					{
+					
+					    var ArrEtat = JSON.parse(req.responseText);
+						var LastEtat= ArrEtat[0];				
+						console.log(LastEtat);
+						
+						var AllEtat = LastEtat.value;
+						console.log(AllEtat);
+										
+						Vol= AllEtat.Vol;
+						console.log(Vol);
+						
+						State= AllEtat.State;
+						console.log(State);
+						
+						Gateway= AllEtat.Gateway;
+						console.log(Gateway);
+						
+						Ip= AllEtat.Ip;
+						console.log(Ip);
+						
+						displayMyVar ();
+					}
+					else
+					{
+						console.log("Erreur pendant le chargement de la page.\n");
+					}
+			  }
+			};
+			req.open('GET', urlEtatRadio , true);
+			req.setRequestHeader("X-API-KEY", '7ef7949fb37c454aa3087f63c276573d');
+			req.send(null);
+			getDataRadio ();
+						
+
+		}
+		
+	    function getDataRadio()
+		{
+
+			var urlDataRadio = 'https://liveobjects.orange-business.com/api/v0/data/streams/urn%3Alo%3Ansid%3AespWebRadio%3A14433047!StrucRadioDataAndOnlineCheck?limit=100';
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function (aEvt) 
+			{
+                  
+			  if (req.readyState == 4) 
+			  {
+					console.log(req.readyState);
+					console.log(req.status);
+					if(req.status == 200)
+					{
+					
+					    var ArrDataRadio = JSON.parse(req.responseText);
+						var LastDataRadio= ArrDataRadio[0];				
+						console.log(LastDataRadio);
+						
+						var AllDataRadio = LastDataRadio.value;
+						console.log(AllDataRadio);
+								
+						Station= AllDataRadio.Station;
+						console.log(Station);
+						
+						Song= AllDataRadio.Song;
+						console.log(Song);
+						
+						displayMyVar ();
+						
+					}
+					else
+					{
+						console.log("Erreur pendant le chargement de la page.\n");
+					}
+			  }
+			};
+			req.open('GET', urlDataRadio , true);
+			req.setRequestHeader("X-API-KEY", '7ef7949fb37c454aa3087f63c276573d');
+			req.send(null);				
+			
+		}
+		
+		function myTimer() 
+		{
+			timeout = timeout -1;
+
+			if (timeout == -1)
+			{
+			timeout = 0;
+			}
+			
+
+
+			document.getElementById("demo1").innerHTML = timeout;
+			console.log(dateDataMemory);
+			console.log(dateData);
+			
+			getSensors();
+			
+		}
+	
+
+    </script>
+
+        <form>
+			<body onload="getSensors();">
+            <h1>Esp radio sensors display</h1>
+			<p><strong>Verssion 1.1</strong> </p>
+			<p>Éditeur: <em>Erwann Caroff</em></p>
+			<p>Lieux de mesure: Lb 120b</p>
+			<p><label>Date de publication: <body onload="displayMyVar('target');"> <span id="demo"/></label><p>
+			<p><label>Actualisation dans: <body onload="displayMyVar('target');"> <span id="demo1"/>S</label><p>
+			<p>(Alerte sonore quand nouvelles données)<p>
+			<input type='button' value='Actualiser la page' onclick='getSensors()' />
+
+            <p>----------------------------------------------------------------	</p>
+			<h2>Données captées</h2>
+            <li><label>Température: <body onload="displayMyVar('target');"> <span id="target1"/></label> °C </li> 
+            <li><label>Humidité: <body onload="displayMyVar('target');"> <span id="target2"/></label> % </li> 
+            <li><label>Pression atmosphérique: <body onload="displayMyVar('target');"> <span id="target3"/></label> hPa</li> 
+            <li><label>Altitude: <body onload="displayMyVar('target');"> <span id="target4"/></label> m </li> 
+            <li><label>Luminosité: <body onload="displayMyVar('target');"> <span id="target5"/></label> Lumen</li> 
+            <li><label>Bruit: <body onload="displayMyVar('target');"> <span id="target6"/></label> % </li> 
+			
+			<h2>États radio</h2>
+			<li><label>Volume: <body onload="displayMyVar('target');"> <span id="target8"/></label> % </li> 
+			<li><label>État: <body onload="displayMyVar('target');"> <span id="target9"/></label> </li> 
+			<li><label>Passerel Internet: <body onload="displayMyVar('target');"> <span id="target10"/></label> </li> 
+			<li><label>Ip page web: <body onload="displayMyVar('target');"> <span id="target11"/></label> </li> 
+			
+			<h2>Infos Radio en cours</h2>
+			<li><label>Station: <body onload="displayMyVar('target');"> <span id="target12"/></label> </li> 
+			<li><label>Titre: <body onload="displayMyVar('target');"> <span id="target13"/></label> </li> 
+			
+			<h2>Cafétéria (prochaine release)</h2>
+			<li><label>Café en cours de préparation:(oui/non) </label> </li> 
+			<li><label>Thé en cours de préparation:(oui/non) </label> </li> 
+			<li><label>La salle est occupée: (oui/non)</li> 
+			
+        </form>
+		<body>
+		<p><img src="http://c.orange.fr/logo-orange.png" alt="Logo Orange" /></p>
+	</body>
+</html>
